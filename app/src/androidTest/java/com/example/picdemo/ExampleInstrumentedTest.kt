@@ -30,12 +30,12 @@ class ExampleInstrumentedTest {
     fun executeMulti() {
         val format = SimpleDateFormat("yy-MM-dd HH:mm:ss")
         val str =  format.format(Date())
+        Log.e(tag, "开始时间" + str)
         for (i in 0..10_0000) {
             GlobalScope.launch {
                 Log.e(tag, "$i  Thread : " + Thread.currentThread().name + "  ")
             }
         }
-        Log.e(tag, "开始时间" + str)
         Log.e(tag, "结束时间" + format.format(Date()))
     }
 }
