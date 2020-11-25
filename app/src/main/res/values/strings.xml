@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PicDemo</string>
+    <string name="address">地点</string>
+    <string name="beijing">北京</string>
+</resources>
