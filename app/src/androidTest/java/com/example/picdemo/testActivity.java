@@ -19,12 +19,12 @@ public class testActivity {
     private final String  tag = "testActivity";
 
     @Rule
-    public ActivityTestRule<Test2Activity> mActivityRule = new ActivityTestRule<>(Test2Activity.class);
+    public ActivityTestRule<TestActivity> mActivityRule = new ActivityTestRule<>(TestActivity.class);
 
     @Test
     public void Test_hello() {
-        Test2Activity mainActy = mActivityRule.getActivity();
-        Intent intent = new Intent(mainActy, Test2Activity.class);
+        TestActivity mainActy = mActivityRule.getActivity();
+        Intent intent = new Intent(mainActy, TestActivity.class);
         mainActy.startActivity(intent);
     }
 
