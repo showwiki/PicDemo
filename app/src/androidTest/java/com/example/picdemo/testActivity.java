@@ -22,7 +22,7 @@ public class testActivity {
     public ActivityTestRule<TestActivity> mActivityRule = new ActivityTestRule<>(TestActivity.class);
 
     @Test
-    public void Test_hello() {
+    public void Test_testActivity() {
         TestActivity mainActy = mActivityRule.getActivity();
         Intent intent = new Intent(mainActy, TestActivity.class);
         mainActy.startActivity(intent);

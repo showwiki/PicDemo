@@ -6,12 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import java.text.SimpleDateFormat
 import java.util.*
 
 class TestActivity : BaseActivity() {
 
-    private val globalScope = GlobalScope.launch {  }
+    private val globalScope = GlobalScope.launch { }
     private val mainScope = MainScope()
     private val lScope = lifecycleScope
 
@@ -27,93 +28,31 @@ class TestActivity : BaseActivity() {
 
 
     val tag = "TestActivity"
-
+    val channel = Channel<Int>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val format = SimpleDateFormat("yy-MM-dd HH:mm:ss")
 
-        val str =  format.format(Date())
-        launch {
-            for (i in 0..10_0000) {
-
-                if(i == 0) {
-                    Log.e(tag, "开始时间" + str)
-                }
-                if(i == 10_0000 - 1) {
-                    Log.e(tag, "结束时间" + format.format(Date()))
-                }
-                val job = launch {
-
-                    Log.e(tag, "$i  Thread : " + Thread.currentThread().name + "  ")
-                }
-
-            }
+        launch(Dispatchers.IO){
+            Log.e(tag, "开始")
+            Log.e(tag, SimpleDateFormat("HH:mm:ss", Locale.CHINA).format(Date()))
+            delay(3000)
+            channel.send(50)
         }
 
-
-        lifecycleScope.launch {
-
+        launch(Dispatchers.Main){
+            val result = channel.receive()
+            Log.e(tag, "等待接收数据")
+            Log.e(tag, SimpleDateFormat("HH:mm:ss", Locale.CHINA).format(Date()))
+            Log.e(tag, "获得的结果是$result")
         }
 
-
-
-        val job =  launch( start = CoroutineStart.ATOMIC) {
-            delay(1000)
-            print("dlsdfl")
+        launch (Dispatchers.IO) {
+            val receive = PicApplication.testChannel.receive()
+            Log.e(tag, "等待接收application中的数据")
+            Log.e(tag, SimpleDateFormat("HH:mm:ss", Locale.CHINA).format(Date()))
+            Log.e(tag, "获得application中的结果是$receive")
         }
-        job.cancel()
-
-
-        launch {
-            compute(1)
-
-            val job = async(Dispatchers.IO) { compute(2) }
-
-            job.await()
-        }
-
-        mainScope.launch {
-
-        }
-        lifecycleScope.launchWhenStarted {
-
-        }
-
-        lifecycleScope.launch {
-            withContext(Dispatchers.Main) {
-
-            }
-        }
-
-//        withContext(Dispatchers.Main) {
-//
-//        }
-
-
-//        async {  }.await()
-
-//        GlobalScope.launch {
-//
-//        }
-//
-//        GlobalScope.async {
-//
-//        }
-//
-//
-//        lifecycleScope.launch {
-//
-//        }
-//
-//
-//        for (i in 1..5) {
-//            //如果是网络任务需要切换调度器launch(Dispatchers.IO)
-//            launch  {
-//                compute(i)
-//
-//            }
-//        }
 
 
         launch {
@@ -138,7 +77,7 @@ class TestActivity : BaseActivity() {
 
 
     private suspend fun compute(i: Int): Int {
-        if(i == 3) throw RuntimeException("Erro")
+        if (i == 3) throw RuntimeException("Erro")
         println("协程任务${i} 开始")
         delay(10) // 方便查看并发的时候的情况
         println("协程任务 内容值${i}")
@@ -147,11 +86,9 @@ class TestActivity : BaseActivity() {
         return i
     }
 
-    private suspend fun mergerResult(a : Int, b : Int) {
+    private suspend fun mergerResult(a: Int, b: Int) {
         println("协程合并 $a + $b")
     }
-
-
 
 
 }
